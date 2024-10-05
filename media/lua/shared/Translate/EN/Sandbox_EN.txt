@@ -1,0 +1,24 @@
+Sandbox_EN = {
+
+	Sandbox_StuffGrabber = "",
+	Sandbox_StuffGrabber_bool = "",
+	Sandbox_StuffGrabber_bool_tooltip = "",
+
+	Sandbox_StuffGrabber_str = "",
+
+	Sandbox_StuffGrabber_int = "",
+
+	Sandbox_StuffGrabber_double = "",
+
+	Sandbox_StuffGrabber_Col = "Color",
+	Sandbox_StuffGrabber_Col_option1 = "RED",
+	Sandbox_StuffGrabber_Col_option2 = "ORANGE",
+	Sandbox_StuffGrabber_Col_option3 = "YELLOW",
+	Sandbox_StuffGrabber_Col_option4 = "GREEN",
+	Sandbox_StuffGrabber_Col_option5 = "BLUE",
+	Sandbox_StuffGrabber_Col_option6 = "INDIGO",
+	Sandbox_StuffGrabber_Col_option7 = "VIOLET",
+	Sandbox_StuffGrabber_Col_option8 = "WHITE",
+	Sandbox_StuffGrabber_Col_option9 = "BLACK",
+
+}

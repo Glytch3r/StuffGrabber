@@ -1,0 +1,24 @@
+Sandbox_EN = {
+
+	Sandbox_myModule = "",
+	Sandbox_myModule_bool = "",
+	Sandbox_myModule_bool_tooltip = "",
+
+	Sandbox_myModule_str = "",
+
+	Sandbox_myModule_int = "",
+
+	Sandbox_myModule_double = "",
+
+	Sandbox_myModule_Col = "Color",
+	Sandbox_myModule_Col_option1 = "RED",
+	Sandbox_myModule_Col_option2 = "ORANGE",
+	Sandbox_myModule_Col_option3 = "YELLOW",
+	Sandbox_myModule_Col_option4 = "GREEN",
+	Sandbox_myModule_Col_option5 = "BLUE",
+	Sandbox_myModule_Col_option6 = "INDIGO",
+	Sandbox_myModule_Col_option7 = "VIOLET",
+	Sandbox_myModule_Col_option8 = "WHITE",
+	Sandbox_myModule_Col_option9 = "BLACK",
+
+}
