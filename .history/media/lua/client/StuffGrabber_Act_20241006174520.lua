@@ -9,13 +9,10 @@
 |‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|
 |                        				 Custom  PZ  Mod  Developer  for  Hire													  |
 |‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|
-|                       	Portfolio:  https://steamcommunity.com/id/glytch3r/myworkshopfiles/							          |
-|                       		                                    														 	  |
-|                       	Discord:    Glytch3r#1337 / glytch3r															      |
-|                       		                                    														 	  |
-|                       	Support:    https://ko-fi.com/glytch3r														    	  |
-|_______________________________________________________________________________________________________________________________-]]
---[[_____________________________________________________________________________________________________________________________
+|                       		 Portfolio:  https://steamcommunity.com/id/glytch3r/myworkshopfiles/							  |
+|                       		 Discord:    Glytch3r#1337 / glytch3r															  |
+|                       		 Support:    https://ko-fi.com/glytch3r														 	  |
+|_________________________________________________________________________________________________________________________________|
    ░▒▓██████▓▒░    ░▒▓████████▓▒░    ░▒▓█▓▒░         ░▒▓█▓▒░      ░▒▓██████▓▒░   ░▒▓█▓▒░ ░▒▓█▓▒░  ░▒▓███████▓▒░    ░▒▓█▓▒░  ░▒█▒░
   ░▒▓█▓▒░░▒▓█▓▒░   ░▒▓█▓▒░           ░▒▓█▓▒░         ░▒▓█▓▒░     ░▒▓█▓▒░░▒▓█▓▒░  ░▒▓█▓▒░ ░▒▓█▓▒░  ▒▓░    ░▒▓█▓▒░   ░▒▓█▓▒░  ░▒█▒░
   ░▒▓█▓▒░░▒▓█▓▒░   ░▒▓█▓▒░           ░▒▓█▓▒░         ░▒▓█▓▒░     ░▒▓█▓▒░         ░▒▓█▓▒░ ░▒▓█▓▒░         ░▒▓█▓▒░   ░▒▓█▓▒░  ░▒▓▒░
@@ -23,49 +20,116 @@
   ░▒▓█▓▒░          ░▒▓█▓▒░        ░▒▓█▓▒░░▒▓█▓▒░     ░▒▓█▓▒░     ░▒▓█▓▒░         ░▒▓█▓▒░ ░▒▓█▓▒░         ░▒▓█▓▒░   ░▒▓█▒░  ░▒▓█▒░
   ░▒▓█▓▒░░▒▓█▓▒░   ░▒▓█▓▒░        ░▒▓█▓▒░░▒▓█▓▒░     ░▒▓█▓▒░     ░▒▓█▓▒░░▒▓█▓▒░  ░▒▓█▓▒░ ░▒▓█▓▒░  ▒▓░    ░▒▓█▓▒░   ░▒▓█▒░  ░▒▓█▒░
    ░▒▓█████▓▒░     ░▒▓█▓▒░        ░▒▓█▓▒░░▒▓█▓▒░  ░▒▓███████▓▒░   ░▒▓██████▓▒░   ░▒▓█▓▒░ ░▒▓█▓▒░  ░▒▓███████▓▒░    ░▒▓███████▓▒░
-█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████--]]
+███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████-]]
+
+----------------------------------------------------------------------------------------------------------------------------------
 
 
 
---server
-if isClient() then return; end
+require "TimedActions/ISBaseTimedAction"
 
-local Commands = {};
-Commands.StuffGrabber = {};
+StuffGrabber_Act = ISBaseTimedAction:derive("StuffGrabber_Act");
 
-Commands.StuffGrabber.isStuffGrabber = function(player, args)
-    local playerId = player:getOnlineID();
-    sendServerCommand('StuffGrabber', 'isStuffGrabber', {id = playerId, isStuffGrabber = args.isStuffGrabber,  zedID = args.zedID})
-end
-
-
-Commands.StuffGrabber.knockDownZed = function(player, args)
-    local playerId = player:getOnlineID();
-    sendServerCommand('StuffGrabber', 'knockDownZed', {id = playerId, zedID = args.zedID})
-end
-
-Commands.StuffGrabber.isWearingStuffGrabber = function(player, args)
-    local playerId = player:dgetOnlineID();
-    sendServerCommand('StuffGrabber', 'isWearingStuffGrabber', {id = playerId, isWearingStuffGrabber =  args.isWearingStuffGrabber})
-end
-
-
-Commands.StuffGrabber.doSpawn = function(player, args)
-    local x, y, z, count, fit, fChance, isDown = args.x,  args.y,  args.z, args.count, args.fit, args.fChance, args.isDown
-    local zed = addZombiesInOutfit(round(x), round(y), round(z), 1, tostring(fit), tonumber(fChance), isDown, false, isDown, isDown, 1.0)
-    if zed then
-        if isDown then
-            if not zed:isOnFloor() then
-                zed:knockDown(true)
+function StuffGrabber_Act:DropLogs() -- self:DropLogs()
+    local count = 0
+    local inv = self.pl:getInventory()
+    if inv:contains(self.toDrop) then
+        for i=1, inv:getItems():size() do
+            local item = inv:getItems():get(i-1);
+            if item then
+                local ftype = item:getFullType()
+                if ftype and ftype == self.toDrop then
+                    count = count + 1
+                    ISTimedActionQueue.add(ISDropWorldItemAction:new(self.pl, item, self.dest, 0,0,0,0));
+                end
             end
+        end
+        ISInventoryPage.renderDirty = true
+        if getCore():getDebug() then
+            local msg = 'Dropping a '.. tostring(self.toDrop)
+            if count > 1 then
+                msg = 'Dropping '..tostring(count)..' '.. tostring(self.toDrop)..'s'
+            end
+            self.pl:setHaloNote(tostring(msg),150,250,150,900)
+            print(msg)
         end
     end
 end
 
-Events.OnClientCommand.Add(function(module, command, player, args)
-	if Commands[module] and Commands[module][command] then
-	    Commands[module][command](player, args)
-	end
-end)
+function StuffGrabber_Act:isValid()
+	if self.pl:getVehicle() then return false end
+    return getGameSpeed() <= 2;
+end
 
+function StuffGrabber_Act:update()
 
+    if instanceof(self.pl, "IsoPlayer") and
+            (self.pl:pressedMovement(false) or self.pl:pressedCancelAction()) then
+        self:forceStop()
+        return
+    end
+
+    self.result = self.pl:getPathFindBehavior2():update();
+
+    if self.result == BehaviorResult.Failed then
+        self:forceStop();
+        return;
+    end
+
+    if self.additionalTest ~= nil then
+       if self.additionalTest(self.additionalContext) then
+			self:forceComplete();
+            return
+       end
+    end
+    if self.result == BehaviorResult.Succeeded then
+        self:forceComplete();
+    end
+end
+
+function StuffGrabber_Act:start()
+    self.pl:getPathFindBehavior2():pathToLocation(self.dest:getX(), self.dest:getY(), self.dest:getZ());
+end
+
+function StuffGrabber_Act:stop()
+    ISBaseTimedAction.stop(self);
+	self.pl:getPathFindBehavior2():cancel()
+    self.pl:setPath2(nil);
+end
+
+function StuffGrabber_Act:perform()
+	self.pl:getPathFindBehavior2():cancel()
+    self.pl:setPath2(nil);
+
+    ISBaseTimedAction.perform(self);
+
+    if self.onCompleteFunc then
+        local args = self.onCompleteArgs
+        self.onCompleteFunc(args[1], args[2], args[3], args[4])
+    end
+    -----------------------            ---------------------------
+    self:DropLogs()
+    -----------------------            ---------------------------
+end
+
+function StuffGrabber_Act:setOnComplete(func, arg1, arg2, arg3, arg4)
+    self.onCompleteFunc = func
+    self.onCompleteArgs = { arg1, arg2, arg3, arg4 }
+end
+
+function StuffGrabber_Act:new(pl, dest, toDrop, additionalTest, additionalContext)
+    local o = {}
+    setmetatable(o, self)
+    self.__index = self
+    o.pl = pl;
+    o.dest = dest;
+    o.stopOnWalk = false;
+    o.stopOnRun = false;
+    o.maxTime = -1;
+    o.pathIndex = 0;
+    o.toDrop = toDrop
+    o.additionalTest = additionalTest;
+    o.additionalContext = additionalContext;
+    return o
+end
+-----------------------            ---------------------------

@@ -112,6 +112,6 @@ function StuffGrabber.func(toGrab, dropPoint)
         pl:setHaloNote(tostring(msg),150,250,150,900)
         print(msg)
     end
-    ISTimedActionQueue.add(DropItemsToDestSquare:new(pl, dropPoint, toGrab))
+    ISTimedActionQueue.add(StuffGrabber_Act:new(pl, dropPoint, toGrab))
     ISInventoryPage.renderDirty = true
 end

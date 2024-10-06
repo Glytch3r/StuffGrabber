@@ -6,4 +6,6 @@ Sandbox_EN = {
 	Sandbox_StuffGrabber_StuffList_tooltip = "Use ; as delimiter",
 	Sandbox_StuffGrabber_GrabRadius = "Grab Radius",
 
+
+
 }

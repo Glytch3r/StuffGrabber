@@ -19,38 +19,6 @@ end
 
 
 
-function StuffGrabber.context(player, context, worldobjects, test)
-	local pl = getSpecificPlayer(player)
-	local dropPoint = clickedSquare
-    local nearbyStuff = false
-	if dropPoint then
-		local Main = context:addOptionOnTop("Gather: ")
-		Main.iconTexture = getTexture("media/ui/emotes/autowalk_on.png")
-		local opt = ISContextMenu:getNew(context)
-		context:addSubMenu(Main, opt)
-
-        local stuff = StuffGrabber.parseList()
-
-        for _, toGrab in ipairs(stuff) do
-            local grabOpt = opt:addOption(tostring(toGrab), worldobjects, function()
-                StuffGrabber.func(toGrab, dropPoint)
-            end)
-            nearbyStuff = nearbyStuff or not grabOpt.notAvailable
-            if not StuffGrabber.isCanGrab(toGrab, dropPoint) then
-                grabOpt.notAvailable = true
-            end
-        end
-
-        if not nearbyStuff then
-            context:removeOptionByName("Gather: ")
-        end
-
-	end
-end
-Events.OnFillWorldObjectContextMenu.Remove(StuffGrabber.context)
-Events.OnFillWorldObjectContextMenu.Add(StuffGrabber.context)
-
-
 function StuffGrabber.isCanGrab(toGrab, dropPoint)
     local rad = StuffGrabber.getRad()
     local pl = getPlayer()
@@ -76,6 +44,39 @@ function StuffGrabber.isCanGrab(toGrab, dropPoint)
 end
 
 
+
+
+function StuffGrabber.context(player, context, worldobjects, test)
+	local pl = getSpecificPlayer(player)
+	local dropPoint = clickedSquare
+    local nearbyStuff = false
+	if dropPoint then
+
+		local Main = context:addOptionOnTop("Gather: ")
+		Main.iconTexture = getTexture("media/ui/emotes/autowalk_on.png")
+		local opt = ISContextMenu:getNew(context)
+		context:addSubMenu(Main, opt)
+
+        local stuff = StuffGrabber.parseList()
+
+        for _, toGrab in ipairs(stuff) do
+            local grabOpt = opt:addOption(tostring(toGrab), worldobjects, function()
+                StuffGrabber.func(toGrab, dropPoint)
+            end)
+            nearbyStuff = true
+            if not StuffGrabber.isCanGrab(toGrab, dropPoint) then
+                grabOpt.notAvailable = true
+            end
+        end
+
+        if not nearbyStuff then
+            context:removeOptionByName(getText("Gather: "))
+        end
+
+	end
+end
+Events.OnFillWorldObjectContextMenu.Remove(StuffGrabber.context)
+Events.OnFillWorldObjectContextMenu.Add(StuffGrabber.context)
 
 function StuffGrabber.func(toGrab, dropPoint)
     local rad = StuffGrabber.getRad()
@@ -105,13 +106,13 @@ function StuffGrabber.func(toGrab, dropPoint)
         end
     end
     if getCore():getDebug() then
-        local msg = 'Grabbing a '.. tostring(toGrab)
+        local msg = 'Grabbed a '.. tostring(toGrab)
         if count > 1 then
-            msg = 'Grabbing '..tostring(count)..' '.. tostring(toGrab)..'s'
+            msg = 'Grabbed '..tostring(count)..' '.. tostring(toGrab)..'s'
         end
         pl:setHaloNote(tostring(msg),150,250,150,900)
         print(msg)
     end
-    ISTimedActionQueue.add(DropItemsToDestSquare:new(pl, dropPoint, toGrab))
+    ISTimedActionQueue.add(StuffGrabber_Act:new(pl, dropPoint, toGrab))
     ISInventoryPage.renderDirty = true
 end

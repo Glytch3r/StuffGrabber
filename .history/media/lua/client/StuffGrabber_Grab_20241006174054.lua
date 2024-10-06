@@ -24,6 +24,7 @@ function StuffGrabber.context(player, context, worldobjects, test)
 	local dropPoint = clickedSquare
     local nearbyStuff = false
 	if dropPoint then
+
 		local Main = context:addOptionOnTop("Gather: ")
 		Main.iconTexture = getTexture("media/ui/emotes/autowalk_on.png")
 		local opt = ISContextMenu:getNew(context)
@@ -35,14 +36,14 @@ function StuffGrabber.context(player, context, worldobjects, test)
             local grabOpt = opt:addOption(tostring(toGrab), worldobjects, function()
                 StuffGrabber.func(toGrab, dropPoint)
             end)
-            nearbyStuff = nearbyStuff or not grabOpt.notAvailable
+            nearbyStuff = true
             if not StuffGrabber.isCanGrab(toGrab, dropPoint) then
                 grabOpt.notAvailable = true
             end
         end
 
         if not nearbyStuff then
-            context:removeOptionByName("Gather: ")
+            context:removeOptionByName(getText("Gather: "))
         end
 
 	end
@@ -105,13 +106,13 @@ function StuffGrabber.func(toGrab, dropPoint)
         end
     end
     if getCore():getDebug() then
-        local msg = 'Grabbing a '.. tostring(toGrab)
+        local msg = 'Grabbed a '.. tostring(toGrab)
         if count > 1 then
-            msg = 'Grabbing '..tostring(count)..' '.. tostring(toGrab)..'s'
+            msg = 'Grabbed '..tostring(count)..' '.. tostring(toGrab)..'s'
         end
         pl:setHaloNote(tostring(msg),150,250,150,900)
         print(msg)
     end
-    ISTimedActionQueue.add(DropItemsToDestSquare:new(pl, dropPoint, toGrab))
+    ISTimedActionQueue.add(StuffGrabber_Act:new(pl, dropPoint, toGrab))
     ISInventoryPage.renderDirty = true
 end
