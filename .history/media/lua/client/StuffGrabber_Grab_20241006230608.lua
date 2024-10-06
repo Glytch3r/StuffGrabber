@@ -45,13 +45,14 @@ function StuffGrabber.context(player, context, worldobjects, test)
                 StuffGrabber.func(toGrab, dropPoint)
             end)
             local tip = ISWorldObjectContextMenu.addToolTip()
-
-            if not ico then
-                ico = "media/ui/StuffGrabber_Missing.png"
+            if ico then
+                tip:setTexture(ico)
+                grabOpt.iconTexture = getTexture(ico)
+            else
+                tip:setTexture("media/ui/StuffGrabber_Missing.png")
+                grabOpt.iconTexture = getTexture("media/ui/StuffGrabber_Missing.png")
             end
 
-            grabOpt.iconTexture = getTexture(ico)
-            tip:setTexture(ico)
 
             tip.description = tostring(toGrab)
             grabOpt.toolTip = tip

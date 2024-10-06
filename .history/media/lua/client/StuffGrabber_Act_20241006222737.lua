@@ -42,16 +42,12 @@ function DropItemsToDestSquare:perform()
 	self.character:getPathFindBehavior2():cancel()
     self.character:setPath2(nil);
 
-
-
     ISBaseTimedAction.perform(self);
 
     if self.onCompleteFunc then
         local args = self.onCompleteArgs
         self.onCompleteFunc(args[1], args[2], args[3], args[4])
     end
-
-
     self:DropLogs(self.character, self.location, self.toDrop)
 end
 
@@ -75,8 +71,6 @@ function DropItemsToDestSquare:new(character, location, toDrop)
     return o
 end
 
-
-
 function DropItemsToDestSquare:DropLogs(pl, dest, toDrop) -- self:DropLogs()
 
     local count = 0
@@ -90,19 +84,14 @@ function DropItemsToDestSquare:DropLogs(pl, dest, toDrop) -- self:DropLogs()
                 table.insert(itemsToDrop, item)
             end
         end
-
+--[[
         for _, item in ipairs(itemsToDrop) do
             count = count + 1
-            pl:playEmote('GatherStuff')
-            ISTimedActionQueue.add(ISDropWorldItemAction:new(pl, item, pl:getCurrentSquare(), 0, 0, 0, 0, true))
-        end
-        if getCore():getDebug() or SandboxVars.StuffGrabber.CountIndicators then
-            local color =  getCore():getGoodHighlitedColor()
-            local msg = 'Gathered: '..tostring(count)
-            pl:setHaloNote(tostring(msg), color:getR()*255, color:getG()*255, color:getB()*255, 200)
-            print(msg)
-        end
-        ISInventoryPage.renderDirty = true
+            print(item:getFullType())
 
+            ISTimedActionQueue.add(ISDropWorldItemAction:new(pl, item, pl:getCurrentSquare(), 0, 0, 0, 0))
+        end ]]
+        ISTimedActionQueue.add(ISDropWorldItemAction:new(pl, itemsToDrop, pl:getCurrentSquare(), 0, 0, 0, 0))
+        ISInventoryPage.renderDirty = true
     end
 end

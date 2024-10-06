@@ -44,15 +44,11 @@ function StuffGrabber.context(player, context, worldobjects, test)
             local grabOpt = opt:addOption(tostring(dispName), worldobjects, function()
                 StuffGrabber.func(toGrab, dropPoint)
             end)
-            local tip = ISWorldObjectContextMenu.addToolTip()
-
-            if not ico then
-                ico = "media/ui/StuffGrabber_Missing.png"
+            if ico then
+                grabOpt.iconTexture = getTexture(ico)
             end
-
-            grabOpt.iconTexture = getTexture(ico)
+            local tip = ISWorldObjectContextMenu.addToolTip()
             tip:setTexture(ico)
-
             tip.description = tostring(toGrab)
             grabOpt.toolTip = tip
 
@@ -146,12 +142,11 @@ function StuffGrabber.func(toGrab, dropPoint)
         local time = ISWorldObjectContextMenu.grabItemTime(pl, item)
         ISTimedActionQueue.add(ISGrabItemAction:new(pl, item, time))
     end
+    local color =  getCore():getGoodHighlitedColor()
 
-
-    if getCore():getDebug() or SandboxVars.StuffGrabber.CountIndicators then
-        local color =  getCore():getGoodHighlitedColor()
+    if getCore():getDebug() then
         local msg = 'Grabbing [ '..tostring(canPickupCount)..' / '..tostring(count)..' ] '.. tostring(toGrab)
-        pl:setHaloNote(tostring(msg), color:getR()*255, color:getG()*255, color:getB()*255, 200)
+        pl:setHaloNote(tostring(msg), color:getR(), color:getG(), color:getB(), 200)
         print(msg)
     end
     ISTimedActionQueue.add(DropItemsToDestSquare:new(pl, dropPoint, toGrab))

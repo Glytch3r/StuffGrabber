@@ -17,15 +17,12 @@ function StuffGrabber.parseList()
     return items
 end
 
-function StuffGrabber.isAlwaysShowOption()
-    return
-end
+
+
 function StuffGrabber.context(player, context, worldobjects, test)
 	local pl = getSpecificPlayer(player)
 	local dropPoint = clickedSquare
     local nearbyStuff = false
-    local ico = nil
-    local isAlwaysShowOption = StuffGrabber.isAlwaysShowOption()
 	if dropPoint then
 		local Main = context:addOptionOnTop("Gather: ")
 		Main.iconTexture = getTexture("media/ui/emotes/autowalk_on.png")
@@ -35,45 +32,23 @@ function StuffGrabber.context(player, context, worldobjects, test)
         local stuff = StuffGrabber.parseList()
 
         for _, toGrab in ipairs(stuff) do
-
-            local ref = getScriptManager():FindItem(toGrab)
-            if ref then
-                ico = 'Item_'..tostring(ref:getIcon()) -- ref:getIcon()
-            end
-            local dispName = ref:getDisplayName()
-            local grabOpt = opt:addOption(tostring(dispName), worldobjects, function()
+            local grabOpt = opt:addOption(tostring(toGrab), worldobjects, function()
                 StuffGrabber.func(toGrab, dropPoint)
             end)
-            local tip = ISWorldObjectContextMenu.addToolTip()
-
-            if not ico then
-                ico = "media/ui/StuffGrabber_Missing.png"
-            end
-
-            grabOpt.iconTexture = getTexture(ico)
-            tip:setTexture(ico)
-
-            tip.description = tostring(toGrab)
-            grabOpt.toolTip = tip
-
-            if not isAlwaysShowOption then
-                nearbyStuff = nearbyStuff or not grabOpt.notAvailable
-                if not StuffGrabber.isCanGrab(toGrab, dropPoint) then
-                    grabOpt.notAvailable = true
-                end
+            nearbyStuff = nearbyStuff or not grabOpt.notAvailable
+            if not StuffGrabber.isCanGrab(toGrab, dropPoint) then
+                grabOpt.notAvailable = true
             end
         end
-        if not isAlwaysShowOption then
-            if not nearbyStuff then
-                context:removeOptionByName("Gather: ")
-            end
+
+        if not nearbyStuff then
+            context:removeOptionByName("Gather: ")
         end
+
 	end
 end
 Events.OnFillWorldObjectContextMenu.Remove(StuffGrabber.context)
 Events.OnFillWorldObjectContextMenu.Add(StuffGrabber.context)
-
-
 
 
 function StuffGrabber.isCanGrab(toGrab, dropPoint)
@@ -130,9 +105,10 @@ function StuffGrabber.func(toGrab, dropPoint)
                         local itemWeight = item:getItem():getActualWeight()
                         totalItemWeight = totalItemWeight + itemWeight
                         count = count + 1
-                        if (currentWeight + totalItemWeight) <= maxWeight or pl:isUnlimitedCarry() then
+                        if (currentWeight + totalItemWeight) <= maxWeight then
                             canPickupCount = canPickupCount + 1
                             table.insert(itemsToGrab, item)
+
                         end
                     end
                 end
@@ -147,11 +123,9 @@ function StuffGrabber.func(toGrab, dropPoint)
         ISTimedActionQueue.add(ISGrabItemAction:new(pl, item, time))
     end
 
-
-    if getCore():getDebug() or SandboxVars.StuffGrabber.CountIndicators then
-        local color =  getCore():getGoodHighlitedColor()
+    if getCore():getDebug() then
         local msg = 'Grabbing [ '..tostring(canPickupCount)..' / '..tostring(count)..' ] '.. tostring(toGrab)
-        pl:setHaloNote(tostring(msg), color:getR()*255, color:getG()*255, color:getB()*255, 200)
+        pl:setHaloNote(tostring(msg),150,250,150,900)
         print(msg)
     end
     ISTimedActionQueue.add(DropItemsToDestSquare:new(pl, dropPoint, toGrab))

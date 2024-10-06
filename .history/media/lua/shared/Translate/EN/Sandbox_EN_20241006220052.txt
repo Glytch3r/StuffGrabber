@@ -1,0 +1,11 @@
+Sandbox_EN = {
+
+	Sandbox_StuffGrabber = "Stuff Grabber",
+
+	Sandbox_StuffGrabber_StuffList = "Stuff List",
+	Sandbox_StuffGrabber_StuffList_tooltip = "Use ; as delimiter",
+	Sandbox_StuffGrabber_GrabRadius = "Grab Radius",
+	Sandbox_StuffGrabber_AlwaysContext = "Always ContextMenu Option",
+	Sandbox_StuffGrabber_AlwaysContext_tooltip = "Turn This On for PvP Servers So Players Cannot Use The Menu To Detect Nearby Items",
+
+}

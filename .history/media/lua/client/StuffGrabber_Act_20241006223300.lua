@@ -27,9 +27,18 @@ function DropItemsToDestSquare:update()
         self:forceComplete();
     end
 end
+function DropItemsToDestSquare:waitToStart()
+	self.character:getPathFindBehavior2():pathToLocation(self.location:getX(), self.location:getY(), self.location:getZ());
+end
 
 function DropItemsToDestSquare:start()
-    self.character:getPathFindBehavior2():pathToLocation(self.location:getX(), self.location:getY(), self.location:getZ());
+
+
+	self:setActionAnim("Loot")
+	self.character:SetVariable("LootPosition", "Low")
+	self:setOverrideHandModels(nil, nil)
+	self.character:reportEvent("EventLootItem");
+
 end
 
 function DropItemsToDestSquare:stop()
@@ -75,8 +84,6 @@ function DropItemsToDestSquare:new(character, location, toDrop)
     return o
 end
 
-
-
 function DropItemsToDestSquare:DropLogs(pl, dest, toDrop) -- self:DropLogs()
 
     local count = 0
@@ -93,16 +100,11 @@ function DropItemsToDestSquare:DropLogs(pl, dest, toDrop) -- self:DropLogs()
 
         for _, item in ipairs(itemsToDrop) do
             count = count + 1
-            pl:playEmote('GatherStuff')
+            print(item:getFullType())
+
             ISTimedActionQueue.add(ISDropWorldItemAction:new(pl, item, pl:getCurrentSquare(), 0, 0, 0, 0, true))
         end
-        if getCore():getDebug() or SandboxVars.StuffGrabber.CountIndicators then
-            local color =  getCore():getGoodHighlitedColor()
-            local msg = 'Gathered: '..tostring(count)
-            pl:setHaloNote(tostring(msg), color:getR()*255, color:getG()*255, color:getB()*255, 200)
-            print(msg)
-        end
-        ISInventoryPage.renderDirty = true
 
+        ISInventoryPage.renderDirty = true
     end
 end

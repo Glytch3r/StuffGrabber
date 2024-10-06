@@ -93,6 +93,7 @@ function DropItemsToDestSquare:DropLogs(pl, dest, toDrop) -- self:DropLogs()
 
         for _, item in ipairs(itemsToDrop) do
             count = count + 1
+
             pl:playEmote('GatherStuff')
             ISTimedActionQueue.add(ISDropWorldItemAction:new(pl, item, pl:getCurrentSquare(), 0, 0, 0, 0, true))
         end

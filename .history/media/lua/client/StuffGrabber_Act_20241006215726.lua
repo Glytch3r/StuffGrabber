@@ -42,16 +42,12 @@ function DropItemsToDestSquare:perform()
 	self.character:getPathFindBehavior2():cancel()
     self.character:setPath2(nil);
 
-
-
     ISBaseTimedAction.perform(self);
 
     if self.onCompleteFunc then
         local args = self.onCompleteArgs
         self.onCompleteFunc(args[1], args[2], args[3], args[4])
     end
-
-
     self:DropLogs(self.character, self.location, self.toDrop)
 end
 
@@ -75,14 +71,13 @@ function DropItemsToDestSquare:new(character, location, toDrop)
     return o
 end
 
-
-
 function DropItemsToDestSquare:DropLogs(pl, dest, toDrop) -- self:DropLogs()
 
     local count = 0
     local inv = pl:getInventory()
 
     if inv:contains(toDrop) then
+        -- Create a copy of the items to avoid modifying the inventory during iteration
         local itemsToDrop = {}
         for i = 1, inv:getItems():size() do
             local item = inv:getItems():get(i - 1)
@@ -91,18 +86,13 @@ function DropItemsToDestSquare:DropLogs(pl, dest, toDrop) -- self:DropLogs()
             end
         end
 
+        -- Now drop the copied items
         for _, item in ipairs(itemsToDrop) do
             count = count + 1
-            pl:playEmote('GatherStuff')
-            ISTimedActionQueue.add(ISDropWorldItemAction:new(pl, item, pl:getCurrentSquare(), 0, 0, 0, 0, true))
+            print(item:getFullType())
+            ISTimedActionQueue.add(ISDropWorldItemAction:new(pl, item, dest, 0, 0, 0, 0))
         end
-        if getCore():getDebug() or SandboxVars.StuffGrabber.CountIndicators then
-            local color =  getCore():getGoodHighlitedColor()
-            local msg = 'Gathered: '..tostring(count)
-            pl:setHaloNote(tostring(msg), color:getR()*255, color:getG()*255, color:getB()*255, 200)
-            print(msg)
-        end
-        ISInventoryPage.renderDirty = true
 
+        ISInventoryPage.renderDirty = true
     end
 end

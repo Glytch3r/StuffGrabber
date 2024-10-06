@@ -38,24 +38,13 @@ function StuffGrabber.context(player, context, worldobjects, test)
 
             local ref = getScriptManager():FindItem(toGrab)
             if ref then
-                ico = 'Item_'..tostring(ref:getIcon()) -- ref:getIcon()
+                ico = ref:getIcon()
             end
-            local dispName = ref:getDisplayName()
-            local grabOpt = opt:addOption(tostring(dispName), worldobjects, function()
+
+            local grabOpt = opt:addOption(tostring(toGrab), worldobjects, function()
                 StuffGrabber.func(toGrab, dropPoint)
             end)
-            local tip = ISWorldObjectContextMenu.addToolTip()
-
-            if not ico then
-                ico = "media/ui/StuffGrabber_Missing.png"
-            end
-
             grabOpt.iconTexture = getTexture(ico)
-            tip:setTexture(ico)
-
-            tip.description = tostring(toGrab)
-            grabOpt.toolTip = tip
-
             if not isAlwaysShowOption then
                 nearbyStuff = nearbyStuff or not grabOpt.notAvailable
                 if not StuffGrabber.isCanGrab(toGrab, dropPoint) then
@@ -72,8 +61,6 @@ function StuffGrabber.context(player, context, worldobjects, test)
 end
 Events.OnFillWorldObjectContextMenu.Remove(StuffGrabber.context)
 Events.OnFillWorldObjectContextMenu.Add(StuffGrabber.context)
-
-
 
 
 function StuffGrabber.isCanGrab(toGrab, dropPoint)
@@ -147,11 +134,9 @@ function StuffGrabber.func(toGrab, dropPoint)
         ISTimedActionQueue.add(ISGrabItemAction:new(pl, item, time))
     end
 
-
-    if getCore():getDebug() or SandboxVars.StuffGrabber.CountIndicators then
-        local color =  getCore():getGoodHighlitedColor()
+    if getCore():getDebug() then
         local msg = 'Grabbing [ '..tostring(canPickupCount)..' / '..tostring(count)..' ] '.. tostring(toGrab)
-        pl:setHaloNote(tostring(msg), color:getR()*255, color:getG()*255, color:getB()*255, 200)
+        pl:setHaloNote(tostring(msg),150,250,150,900)
         print(msg)
     end
     ISTimedActionQueue.add(DropItemsToDestSquare:new(pl, dropPoint, toGrab))
