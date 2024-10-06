@@ -29,28 +29,50 @@ function StuffGrabber_Act:isValid()
 end
 
 function StuffGrabber_Act:update()
-    local qty = self.character:getInventory():getItemCount(self.toDrop)
-    if qty == 0 then
-        self:forceComplete()
+
+    if instanceof(self.character, "IsoPlayer") and
+            (self.character:pressedMovement(false) or self.character:pressedCancelAction()) then
+        self:forceStop()
+        return
+    end
+
+    self.result = self.character:getPathFindBehavior2():update();
+
+    if self.result == BehaviorResult.Failed then
+        self:forceStop();
+        return;
+    end
+
+    if self.result == BehaviorResult.Succeeded then
+        self:forceComplete();
     end
 end
 
 function StuffGrabber_Act:start()
-    local qty = self.character:getInventory():getItemCount(self.toDrop)
-    if qty == 0 then
-        self:forceComplete() -- Early exit if nothing to drop
-        return
-    end
-    self.character:playEmote('GatherStuff')
-    self:DropStuff(self.character, self.location, self.toDrop)
+    self.character:getPathFindBehavior2():pathToLocation(self.location:getX(), self.location:getY(), self.location:getZ());
 end
 
 function StuffGrabber_Act:stop()
-    -- Ensure the action is properly stopped
-    ISBaseTimedAction.stop(self)
+    ISBaseTimedAction.stop(self);
+	self.character:getPathFindBehavior2():cancel()
+    self.character:setPath2(nil);
 end
 
 function StuffGrabber_Act:perform()
+	self.character:getPathFindBehavior2():cancel()
+    self.character:setPath2(nil);
+
+
+
+
+
+    if self.onCompleteFunc then
+        local args = self.onCompleteArgs
+        self.onCompleteFunc(args[1], args[2], args[3], args[4])
+    end
+
+
+    self:DropStuff(self.character, self.location, self.toDrop)
     ISBaseTimedAction.perform(self);
 end
 
@@ -67,37 +89,40 @@ function StuffGrabber_Act:new(character, location, toDrop)
     o.toDrop = toDrop
     o.stopOnWalk = false;
     o.stopOnRun = false;
-    o.maxTime = 150;
+    o.maxTime = -1;
     o.location = location;
+    o.pathIndex = 0;
+
     return o
 end
 
 
 
-function StuffGrabber_Act:DropStuff(pl, dest, toDrop) -- self:DropStuff()
+function StuffGrabber_Act:DropStuff(pl, dest, toDrop) -- self:DropLogs()
 
     local count = 0
     local inv = pl:getInventory()
-    local itemsToDrop = {}
-    for i = 1, inv:getItems():size()  do
-        local item = inv:getItems():get(i - 1)
-        if item and item:getFullType() == toDrop then
-            if inv:getItemCount(toDrop) > 0 then
-                count = count + 1
-                --inv:Remove(item)
-                --pl:getCurrentSquare():AddWorldInventoryItem(item, ZombRand(0,2), ZombRand(0,2), 0)
-                ISTimedActionQueue.add(ISInventoryTransferAction:new(pl , item, inv, ISInventoryPage.GetFloorContainer(0)))
+
+    if inv:contains(toDrop) then
+        local itemsToDrop = {}
+        for i = 1, inv:getItems():size() do
+            local item = inv:getItems():get(i - 1)
+            if item and item:getFullType() == toDrop then
+                table.insert(itemsToDrop, item)
             end
         end
+
+        for _, item in ipairs(itemsToDrop) do
+            count = count + 1
+            ISTimedActionQueue.add(StuffGrabber_Drop:new(pl, item, pl:getCurrentSquare(), 0, 0, 0, 0, true, 200))
+        end
+        if getCore():getDebug() or SandboxVars.StuffGrabber.CountIndicators then
+            local color =  getCore():getGoodHighlitedColor()
+            local msg = 'Gathered: '..tostring(count)
+            pl:setHaloNote(tostring(msg), color:getR()*255, color:getG()*255, color:getB()*255, 200)
+            print(msg)
+        end
+        ISInventoryPage.renderDirty = true
+
     end
-
-    if getCore():getDebug() or SandboxVars.StuffGrabber.CountIndicators then
-        local color =  getCore():getGoodHighlitedColor()
-        local msg = 'Gathered: '..tostring(count)
-        pl:setHaloNote(tostring(msg), color:getR()*255, color:getG()*255, color:getB()*255, 200)
-        print(msg)
-    end
-    ISInventoryPage.renderDirty = true
-
-
 end

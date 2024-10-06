@@ -8,7 +8,5 @@ Sandbox_EN = {
 	Sandbox_StuffGrabber_AlwaysShowOption = "Always Show ContextMenu Option",
 	Sandbox_StuffGrabber_AlwaysShowOption_tooltip = "Turn This On for PvP Servers So Players Cannot Use The Menu To Detect Nearby Items",
 	Sandbox_StuffGrabber_CountIndicators = "Count Indicators",
-	Sandbox_StuffGrabber_ForceCarryWeight = "Force Carry Weight ",
-	Sandbox_StuffGrabber_ForceCarryWeight_tooltip = "The Additional Weight You Carry Beyond Your Comfort Limit",
 
 }

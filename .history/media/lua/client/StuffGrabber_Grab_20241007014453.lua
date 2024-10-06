@@ -61,7 +61,7 @@ function StuffGrabber.func(toGrab, dropPoint)
     local x, y, z = dropPoint:getX(), dropPoint:getY(), dropPoint:getZ()
 
 
-    local maxWeight = (pl:getMaxWeight() + SandboxVars.StuffGrabber.ForceCarryWeight)
+    local maxWeight = pl:getMaxWeight()
     local currentWeight = inv:getCapacityWeight()
     local totalItemWeight = 0
     local itemsToGrab = {}
@@ -103,13 +103,7 @@ function StuffGrabber.func(toGrab, dropPoint)
         pl:setHaloNote(tostring(msg), color:getR()*255, color:getG()*255, color:getB()*255, 200)
         print(msg)
     end
-    ISTimedActionQueue.add(ISWalkToTimedAction:new(pl, dropPoint))
+    --ISTimedActionQueue.add(ISWalkToTimedAction:new(pl, dropPoint))
     ISTimedActionQueue.add(StuffGrabber_Act:new(pl, dropPoint, toGrab))
     ISInventoryPage.renderDirty = true
 end
-
---[[
-print( getPlayer():getInventoryWeight())
-print( getPlayer():getInventory():getCapacityWeight())
-print( getPlayer():getMaxWeight())
- ]]

@@ -13,12 +13,6 @@ option StuffGrabber.GrabRadius
 	page = StuffGrabber, translation = StuffGrabber_GrabRadius,
 }
 
-option StuffGrabber.ForceCarryWeight
-{
-	type = double, min = 0.05, max = 50, default = 25,
-	page = StuffGrabber, translation = StuffGrabber_ForceCarryWeight,
-}
-
 
 
 option StuffGrabber.AlwaysShowOption

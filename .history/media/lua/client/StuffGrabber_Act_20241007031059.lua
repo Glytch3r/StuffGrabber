@@ -84,9 +84,8 @@ function StuffGrabber_Act:DropStuff(pl, dest, toDrop) -- self:DropStuff()
         if item and item:getFullType() == toDrop then
             if inv:getItemCount(toDrop) > 0 then
                 count = count + 1
-                --inv:Remove(item)
-                --pl:getCurrentSquare():AddWorldInventoryItem(item, ZombRand(0,2), ZombRand(0,2), 0)
-                ISTimedActionQueue.add(ISInventoryTransferAction:new(pl , item, inv, ISInventoryPage.GetFloorContainer(0)))
+                inv:Remove(item)
+                pl:getCurrentSquare():AddWorldInventoryItem(item, ZombRand(0,2), ZombRand(0,2), 0)
             end
         end
     end

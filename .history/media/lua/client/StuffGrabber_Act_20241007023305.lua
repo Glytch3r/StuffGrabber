@@ -31,23 +31,16 @@ end
 function StuffGrabber_Act:update()
     local qty = self.character:getInventory():getItemCount(self.toDrop)
     if qty == 0 then
-        self:forceComplete()
+        self:forceComplete();
     end
 end
 
 function StuffGrabber_Act:start()
-    local qty = self.character:getInventory():getItemCount(self.toDrop)
-    if qty == 0 then
-        self:forceComplete() -- Early exit if nothing to drop
-        return
-    end
     self.character:playEmote('GatherStuff')
     self:DropStuff(self.character, self.location, self.toDrop)
 end
 
 function StuffGrabber_Act:stop()
-    -- Ensure the action is properly stopped
-    ISBaseTimedAction.stop(self)
 end
 
 function StuffGrabber_Act:perform()
@@ -74,7 +67,7 @@ end
 
 
 
-function StuffGrabber_Act:DropStuff(pl, dest, toDrop) -- self:DropStuff()
+function StuffGrabber_Act:DropStuff(pl, dest, toDrop) -- self:DropLogs()
 
     local count = 0
     local inv = pl:getInventory()
@@ -82,12 +75,8 @@ function StuffGrabber_Act:DropStuff(pl, dest, toDrop) -- self:DropStuff()
     for i = 1, inv:getItems():size()  do
         local item = inv:getItems():get(i - 1)
         if item and item:getFullType() == toDrop then
-            if inv:getItemCount(toDrop) > 0 then
-                count = count + 1
-                --inv:Remove(item)
-                --pl:getCurrentSquare():AddWorldInventoryItem(item, ZombRand(0,2), ZombRand(0,2), 0)
-                ISTimedActionQueue.add(ISInventoryTransferAction:new(pl , item, inv, ISInventoryPage.GetFloorContainer(0)))
-            end
+            count = count + 1
+            ISTimedActionQueue.add(ISDropItemAction:new(pl, item))
         end
     end
 

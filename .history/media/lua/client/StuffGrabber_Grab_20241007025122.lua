@@ -61,7 +61,7 @@ function StuffGrabber.func(toGrab, dropPoint)
     local x, y, z = dropPoint:getX(), dropPoint:getY(), dropPoint:getZ()
 
 
-    local maxWeight = (pl:getMaxWeight() + SandboxVars.StuffGrabber.ForceCarryWeight)
+    local maxWeight = pl:getMaxWeight() + 20
     local currentWeight = inv:getCapacityWeight()
     local totalItemWeight = 0
     local itemsToGrab = {}
@@ -108,8 +108,7 @@ function StuffGrabber.func(toGrab, dropPoint)
     ISInventoryPage.renderDirty = true
 end
 
---[[
-print( getPlayer():getInventoryWeight())
+--[[ print( getPlayer():getInventoryWeight())
 print( getPlayer():getInventory():getCapacityWeight())
 print( getPlayer():getMaxWeight())
  ]]

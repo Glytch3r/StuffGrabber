@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <animNode>
 	<m_Name>GatherStuff</m_Name>
-	<m_AnimName>Bob_IdleLooting_Low</m_AnimName>
+	<m_AnimName>Bob_IdleLooting_Mid</m_AnimName>
 
 	<m_deferredBoneAxis>Y</m_deferredBoneAxis>
 	<m_Looped>false</m_Looped>
