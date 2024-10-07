@@ -1,0 +1,21 @@
+
+module Base {
+	sound  PsychoCry_1 { clip { file = media/sound/PsychoCry_1.ogg, distanceMax = 80, is3D = true, volume = 0.5, maxGain = 1, maxInstancesPerEmitter = 2, } }
+	sound  PsychoCry_2 { clip { file = media/sound/PsychoCry_2.ogg, distanceMax = 80, is3D = true, volume = 0.5, maxGain = 1, maxInstancesPerEmitter = 2, } }
+	sound  PsychoCry_3 { clip { file = media/sound/PsychoCry_3.ogg, distanceMax = 80, is3D = true, volume = 0.5, maxGain = 1, maxInstancesPerEmitter = 2, } }
+	sound  PsychoCry_4 { clip { file = media/sound/PsychoCry_4.ogg, distanceMax = 80, is3D = true, volume = 0.5, maxGain = 1, maxInstancesPerEmitter = 2, } }
+	sound  PsychoCry_5 { clip { file = media/sound/PsychoCry_5.ogg, distanceMax = 80, is3D = true, volume = 0.5, maxGain = 1, maxInstancesPerEmitter = 2, } }
+	sound  PsychoCry_6 { clip { file = media/sound/PsychoCry_6.ogg, distanceMax = 80, is3D = true, volume = 0.5, maxGain = 1, maxInstancesPerEmitter = 2, } }
+	sound  PsychoLaugh_1 { clip { file = media/sound/PsychoLaugh_1.ogg, distanceMax = 80, is3D = true, volume = 0.5, maxGain = 1, maxInstancesPerEmitter = 2, } }
+	sound  PsychoLaugh_2 { clip { file = media/sound/PsychoLaugh_2.ogg, distanceMax = 80, is3D = true, volume = 0.5, maxGain = 1, maxInstancesPerEmitter = 2, } }
+	sound  PsychoLaugh_3 { clip { file = media/sound/PsychoLaugh_3.ogg, distanceMax = 80, is3D = true, volume = 0.5, maxGain = 1, maxInstancesPerEmitter = 2, } }
+	sound  PsychoLaugh_4 { clip { file = media/sound/PsychoLaugh_4.ogg, distanceMax = 80, is3D = true, volume = 0.5, maxGain = 1, maxInstancesPerEmitter = 2, } }
+	sound  PsychoLaugh_5 { clip { file = media/sound/PsychoLaugh_5.ogg, distanceMax = 80, is3D = true, volume = 0.5, maxGain = 1, maxInstancesPerEmitter = 2, } }
+	sound  PsychoLaugh_6 { clip { file = media/sound/PsychoLaugh_6.ogg, distanceMax = 80, is3D = true, volume = 0.5, maxGain = 1, maxInstancesPerEmitter = 2, } }
+	sound  PsychoLaugh_7 { clip { file = media/sound/PsychoLaugh_7.ogg, distanceMax = 80, is3D = true, volume = 0.5, maxGain = 1, maxInstancesPerEmitter = 2, } }
+	sound  PsychoScream_1 { clip { file = media/sound/PsychoScream_1.ogg, distanceMax = 80, is3D = true, volume = 0.5, maxGain = 1, maxInstancesPerEmitter = 2, } }
+	sound  PsychoScream_2 { clip { file = media/sound/PsychoScream_2.ogg, distanceMax = 80, is3D = true, volume = 0.5, maxGain = 1, maxInstancesPerEmitter = 2, } }
+}
+
+
+

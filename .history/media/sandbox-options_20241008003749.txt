@@ -30,4 +30,3 @@ option StuffGrabber.CountIndicators
 	type = boolean, default = true,
 	page = StuffGrabber, translation = StuffGrabber_CountIndicators,
 }
-

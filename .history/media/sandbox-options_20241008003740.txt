@@ -19,6 +19,8 @@ option StuffGrabber.ForceCarryWeight
 	page = StuffGrabber, translation = StuffGrabber_ForceCarryWeight,
 }
 
+
+
 option StuffGrabber.AlwaysShowOption
 {
 	type = boolean, default = false,
@@ -30,4 +32,3 @@ option StuffGrabber.CountIndicators
 	type = boolean, default = true,
 	page = StuffGrabber, translation = StuffGrabber_CountIndicators,
 }
-
