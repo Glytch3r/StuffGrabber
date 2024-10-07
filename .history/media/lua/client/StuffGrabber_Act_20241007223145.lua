@@ -53,7 +53,7 @@ function StuffGrabber_Act:perform()
     ISBaseTimedAction.perform(self);
 
     if self.shouldGoBack then
-        StuffGrabber.func(self.toDrop, self.location)
+        StuffGrabber.func(self.toGrab, self.dropPoint)
     end
 end
 
@@ -70,6 +70,7 @@ function StuffGrabber_Act:new(character, location, toDrop, shouldGoBack)
     o.location = location;
     return o
 end
+
 
 function StuffGrabber_Act:DropStuff(pl, dest, toDrop) -- self:DropStuff()
     pl:getModData()['StuffToGather'] = nil

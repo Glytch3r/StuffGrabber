@@ -27,86 +27,120 @@
 
 StuffGrabber = StuffGrabber or {}
 
-function StuffGrabber.clearActions()
-	local pl = getPlayer()
-	local actionQueue = ISTimedActionQueue.getTimedActionQueue(pl)
-	for i, action in ipairs(actionQueue.queue) do
-		if action.action then
-			action.action:forceStop()
-		end
-	end
-	ISTimedActionQueue.clear(pl)
-end
-function StuffGrabber.getRad()
-    return SandboxVars.StuffGrabber.GrabRadius or 4
-end
-
-function StuffGrabber.getStuffList()
-    return SandboxVars.StuffGrabber.StuffList or  "Base.Katana;Base.Apple;Base.Log"
-end
-function StuffGrabber.parseList()
-    local items = {}
-    local strList = StuffGrabber.getStuffList()
-    for item in string.gmatch(strList, "[^;]+") do
-        table.insert(items, item)
-    end
-    return items
-end
-
-function StuffGrabber.isAlwaysShowOption()
-    return SandboxVars.StuffGrabber.AlwaysShowOption
-end
-function StuffGrabber.context(player, context, worldobjects, test)
-	local pl = getSpecificPlayer(player)
-	local dropPoint = clickedSquare
-    local nearbyStuff = false
-    local ico = nil
-    local isAlwaysShowOption = StuffGrabber.isAlwaysShowOption()
-	if dropPoint then
-		local Main = context:addOptionOnTop("Gather: ")
-		Main.iconTexture = getTexture("media/ui/emotes/autowalk_on.png")
-		local opt = ISContextMenu:getNew(context)
-		context:addSubMenu(Main, opt)
-
-        local stuff = StuffGrabber.parseList()
-
-        for _, toGrab in ipairs(stuff) do
-
-            local ref = getScriptManager():FindItem(toGrab)
-            if ref then
-                ico = 'Item_'..tostring(ref:getIcon()) -- ref:getIcon()
-            end
-            local dispName = ref:getDisplayName()
-            local grabOpt = opt:addOption(tostring(dispName), worldobjects, function()
-                StuffGrabber.func(toGrab, dropPoint)
-            end)
-            local tip = ISWorldObjectContextMenu.addToolTip()
-
-            if not ico then
-                ico = "media/ui/StuffGrabber_Missing.png"
-            end
-
-            grabOpt.iconTexture = getTexture(ico)
-            tip:setTexture(ico)
-
-            tip.description = tostring(toGrab)
-            grabOpt.toolTip = tip
-
-            if not isAlwaysShowOption then
-                nearbyStuff = nearbyStuff or not grabOpt.notAvailable
-                if not StuffGrabber.isCanGrab(toGrab, dropPoint) then
-                    grabOpt.notAvailable = true
+function StuffGrabber.isCanGrab(toGrab, dropPoint)
+    local rad = StuffGrabber.getRad()
+    local pl = getPlayer()
+    local stuff = {}
+    local cell = pl:getCell()
+    local x, y, z = dropPoint:getX(), dropPoint:getY(), dropPoint:getZ()
+    local count = 0
+    for xDelta = -rad, rad do
+        for yDelta = -rad, rad do
+            local targSq = cell:getOrCreateGridSquare(x + xDelta, y + yDelta, z)
+            for i = 0, targSq:getObjects():size() - 1 do
+                local item = targSq:getObjects():get(i)
+                if instanceof(item, "IsoWorldInventoryObject") then
+                    local name = item:getItem():getFullType()
+                    if name and name == toGrab then
+                        return true
+                    end
                 end
             end
         end
-        if not isAlwaysShowOption then
-            if not nearbyStuff then
-                context:removeOptionByName("Gather: ")
+    end
+    return false
+end
+
+function StuffGrabber.isNearDropPoint(dropPoint, itemSq)
+    if dropPoint == itemSq then return true end
+    local dropX, dropY, dropZ = dropPoint:getX(), dropPoint:getY(), dropPoint:getZ()
+    local itemX, itemY, itemZ = itemSq:getX(), itemSq:getY(), itemSq:getZ()
+    if itemZ == dropZ then
+        if math.abs(itemX - dropX) <= 1 and math.abs(itemY - dropY) <= 1 then
+            return true
+        end
+    end
+    return false
+end
+
+
+
+function StuffGrabber.func(toGrab, dropPoint)
+    local rad = StuffGrabber.getRad()
+    local pl = getPlayer()
+    local inv = pl:getInventory()
+
+
+    local cell = pl:getCell()
+    local x, y, z = dropPoint:getX(), dropPoint:getY(), dropPoint:getZ()
+
+
+    local maxWeight = (pl:getMaxWeight() + SandboxVars.StuffGrabber.ForceCarryWeight)
+    local currentWeight = inv:getCapacityWeight()
+    local totalItemWeight = 0
+    local itemsToGrab = {}
+    local ignored = 0
+    local canPickupCount = 0
+    local count = 0
+    for xDelta = -rad, rad do
+        for yDelta = -rad, rad do
+            local targSq = cell:getOrCreateGridSquare(x + xDelta, y + yDelta, z)
+            for i = 0, targSq:getObjects():size() - 1 do
+                local item = targSq:getObjects():get(i)
+                if instanceof(item, "IsoWorldInventoryObject") then
+                    local name = item:getItem():getFullType()
+                    if name and name == toGrab then
+                        local itemSq = item:getSquare()
+                        if itemSq then
+                            count = count + 1
+                            if not StuffGrabber.isNearDropPoint(dropPoint, itemSq) then
+                                local itemWeight = item:getItem():getActualWeight()
+                                totalItemWeight = totalItemWeight + itemWeight
+                                if (currentWeight + totalItemWeight) <= maxWeight or pl:isUnlimitedCarry() then
+                                    canPickupCount = canPickupCount + 1
+                                    table.insert(itemsToGrab, item)
+                                end
+                            else
+                                ignored = ignored + 1
+                            end
+                        end
+                    end
+                end
             end
         end
-	end
+    end
+
+    for _, item in ipairs(itemsToGrab) do
+        local targSq = item:getSquare()
+        ISTimedActionQueue.add(ISWalkToTimedAction:new(pl, targSq))
+        local time = ISWorldObjectContextMenu.grabItemTime(pl, item)
+        ISTimedActionQueue.add(ISGrabItemAction:new(pl, item, time))
+    end
+
+
+    if getCore():getDebug() or SandboxVars.StuffGrabber.CountIndicators then
+        print('ignored ' .. tostring(ignored))
+        local color =  getCore():getGoodHighlitedColor()
+        local msg = 'Grabbing [ '..tostring(canPickupCount)..' / '..tostring(count)..' ] '.. tostring(toGrab)
+        pl:setHaloNote(tostring(msg), color:getR()*255, color:getG()*255, color:getB()*255, 200)
+    end
+
+    local shouldGoBack = false
+    if (count - ignored) > canPickupCount then shouldGoBack = true end
+    print('shouldGoBack '..tostring(shouldGoBack))
+    print(count - ignored)
+    print(canPickupCount)
+
+    ISTimedActionQueue.add(ISWalkToTimedAction:new(pl, dropPoint))
+    ISTimedActionQueue.add(StuffGrabber_Act:new(pl, dropPoint, toGrab, shouldGoBack))
+    ISInventoryPage.renderDirty = true
 end
-Events.OnFillWorldObjectContextMenu.Remove(StuffGrabber.context)
-Events.OnFillWorldObjectContextMenu.Add(StuffGrabber.context)
 
 
+
+
+--[[
+print( getPlayer():getInventoryWeight())
+print( getPlayer():getInventory():getCapacityWeight())
+print( getPlayer():getMaxWeight())
+ ]]

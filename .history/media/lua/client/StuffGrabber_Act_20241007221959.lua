@@ -18,7 +18,7 @@ Discord: Glytch3r#1337 / glytch3r
 
 
 ------------------------------------------------------------------------------------------------------------------------ --]]
-StuffGrabber = StuffGrabber or {}
+
 require "TimedActions/ISBaseTimedAction"
 
 StuffGrabber_Act = ISBaseTimedAction:derive("StuffGrabber_Act");
@@ -51,13 +51,9 @@ end
 
 function StuffGrabber_Act:perform()
     ISBaseTimedAction.perform(self);
-
-    if self.shouldGoBack then
-        StuffGrabber.func(self.toDrop, self.location)
-    end
 end
 
-function StuffGrabber_Act:new(character, location, toDrop, shouldGoBack)
+function StuffGrabber_Act:new(character, location, toDrop)
     local o = {}
     setmetatable(o, self)
     self.__index = self
@@ -66,10 +62,11 @@ function StuffGrabber_Act:new(character, location, toDrop, shouldGoBack)
     o.stopOnWalk = false;
     o.stopOnRun = false;
     o.maxTime = 150;
-    o.shouldGoBack = shouldGoBack;
     o.location = location;
     return o
 end
+
+
 
 function StuffGrabber_Act:DropStuff(pl, dest, toDrop) -- self:DropStuff()
     pl:getModData()['StuffToGather'] = nil

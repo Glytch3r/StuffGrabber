@@ -21,81 +21,87 @@ Discord: Glytch3r#1337 / glytch3r
 StuffGrabber = StuffGrabber or {}
 require "TimedActions/ISBaseTimedAction"
 
-StuffGrabber_Act = ISBaseTimedAction:derive("StuffGrabber_Act");
+StuffGrabber_GoToItem = ISBaseTimedAction:derive("StuffGrabber_GoToItem");
 
-function StuffGrabber_Act:isValid()
+function StuffGrabber_GoToItem:isValid()
 	if self.character:getVehicle() then return false end
     return getGameSpeed() <= 2;
 end
 
-function StuffGrabber_Act:update()
-    local qty = self.character:getInventory():getItemCount(self.toDrop)
-    if qty == 0 then
-        self:forceComplete()
-    end
-end
 
-function StuffGrabber_Act:start()
-    local qty = self.character:getInventory():getItemCount(self.toDrop)
-    if qty == 0 then
+function StuffGrabber_GoToItem:update()
+    self.StuffToGather = self.character:getModData()['StuffToGather']
+
+    if self.StuffToGather == nil and
+        self:forceStop()
+        return
+    end
+
+
+
+    if instanceof(self.character, "IsoPlayer") and
+            (self.character:pressedMovement(false) or self.character:pressedCancelAction()) then
+        self:forceStop()
+        return
+    end
+
+    self.result = self.character:getPathFindBehavior2():update();
+
+    if self.result == BehaviorResult.Failed then
+        self:forceStop();
+        return;
+    end
+
+    if not self.targetItem or not self.targetItem:getSquare() ~= self.location then
         self:forceComplete()
         return
     end
-    self.character:playEmote('GatherStuff')
-    self:DropStuff(self.character, self.location, self.toDrop)
-end
 
-function StuffGrabber_Act:stop()
-    ISBaseTimedAction.stop(self)
-end
-
-function StuffGrabber_Act:perform()
-    ISBaseTimedAction.perform(self);
-
-    if self.shouldGoBack then
-        StuffGrabber.func(self.toDrop, self.location)
+    if self.additionalTest ~= nil then
+       if self.additionalTest(self.additionalContext) then
+			self:forceComplete();
+            return
+       end
+    end
+    if self.result == BehaviorResult.Succeeded then
+        self:forceComplete();
     end
 end
 
-function StuffGrabber_Act:new(character, location, toDrop, shouldGoBack)
+
+function StuffGrabber_GoToItem:start()
+    self.character:getPathFindBehavior2():pathToLocation(self.location:getX(), self.location:getY(), self.location:getZ())
+end
+
+function StuffGrabber_GoToItem:stop()
+    self.character:getModData()['StuffToGather'] = nil
+    ISBaseTimedAction.stop(self)
+	self.character:getPathFindBehavior2():cancel()
+    self.character:setPath2(nil)
+    StuffGrabber.clearActions()
+end
+
+function StuffGrabber_GoToItem:perform()
+    self.StuffToGather['canPickupCount'] = self.StuffToGather['canPickupCount'] - 1
+    self.StuffToGather['count'] = self.StuffToGather['count'] - 1
+	self.character:getPathFindBehavior2():cancel()
+    self.character:setPath2(nil)
+    ISBaseTimedAction.perform(self)
+end
+
+function StuffGrabber_GoToItem:new(character, location, targetItem)
     local o = {}
     setmetatable(o, self)
     self.__index = self
-    o.character = character;
-    o.toDrop = toDrop
-    o.stopOnWalk = false;
-    o.stopOnRun = false;
-    o.maxTime = 150;
-    o.shouldGoBack = shouldGoBack;
-    o.location = location;
+    o.character = character
+
+    o.stopOnWalk = false
+    o.stopOnRun = false
+    o.maxTime = -1
+    o.location = location
+    o.targetItem = targetItem
+    o.pathIndex = 0
+    o.additionalTest = additionalTest
+    o.additionalContext = additionalContext
     return o
-end
-
-function StuffGrabber_Act:DropStuff(pl, dest, toDrop) -- self:DropStuff()
-    pl:getModData()['StuffToGather'] = nil
-
-    local count = 0
-    local inv = pl:getInventory()
-    local itemsToDrop = {}
-    for i = 1, inv:getItems():size()  do
-        local item = inv:getItems():get(i - 1)
-        if item and item:getFullType() == toDrop then
-            if inv:getItemCount(toDrop) > 0 then
-                count = count + 1
-                --inv:Remove(item)
-                --pl:getCurrentSquare():AddWorldInventoryItem(item, ZombRand(0,2), ZombRand(0,2), 0)
-                ISTimedActionQueue.add(ISInventoryTransferAction:new(pl , item, inv, ISInventoryPage.GetFloorContainer(0)))
-            end
-        end
-    end
-
-    if getCore():getDebug() or SandboxVars.StuffGrabber.CountIndicators then
-        local color =  getCore():getGoodHighlitedColor()
-        local msg = 'Gathered: '..tostring(count)
-        pl:setHaloNote(tostring(msg), color:getR()*255, color:getG()*255, color:getB()*255, 200)
-        print(msg)
-    end
-    ISInventoryPage.renderDirty = true
-
-
 end

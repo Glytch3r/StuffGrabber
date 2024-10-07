@@ -18,7 +18,7 @@ Discord: Glytch3r#1337 / glytch3r
 
 
 ------------------------------------------------------------------------------------------------------------------------ --]]
-StuffGrabber = StuffGrabber or {}
+
 require "TimedActions/ISBaseTimedAction"
 
 StuffGrabber_Act = ISBaseTimedAction:derive("StuffGrabber_Act");
@@ -38,7 +38,7 @@ end
 function StuffGrabber_Act:start()
     local qty = self.character:getInventory():getItemCount(self.toDrop)
     if qty == 0 then
-        self:forceComplete()
+        self:forceComplete() -- Early exit if nothing to drop
         return
     end
     self.character:playEmote('GatherStuff')
@@ -46,18 +46,20 @@ function StuffGrabber_Act:start()
 end
 
 function StuffGrabber_Act:stop()
+    -- Ensure the action is properly stopped
     ISBaseTimedAction.stop(self)
 end
 
 function StuffGrabber_Act:perform()
     ISBaseTimedAction.perform(self);
-
-    if self.shouldGoBack then
-        StuffGrabber.func(self.toDrop, self.location)
-    end
 end
 
-function StuffGrabber_Act:new(character, location, toDrop, shouldGoBack)
+function StuffGrabber_Act:setOnComplete(func, arg1, arg2, arg3, arg4)
+    self.onCompleteFunc = func
+    self.onCompleteArgs = { arg1, arg2, arg3, arg4 }
+end
+
+function StuffGrabber_Act:new(character, location, toDrop)
     local o = {}
     setmetatable(o, self)
     self.__index = self
@@ -66,13 +68,13 @@ function StuffGrabber_Act:new(character, location, toDrop, shouldGoBack)
     o.stopOnWalk = false;
     o.stopOnRun = false;
     o.maxTime = 150;
-    o.shouldGoBack = shouldGoBack;
     o.location = location;
     return o
 end
 
+
+
 function StuffGrabber_Act:DropStuff(pl, dest, toDrop) -- self:DropStuff()
-    pl:getModData()['StuffToGather'] = nil
 
     local count = 0
     local inv = pl:getInventory()
