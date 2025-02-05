@@ -108,7 +108,7 @@ function PickItUp.keypress(key)
         local csq = pl:getCurrentSquare()
         local canPickForage =  SandboxVars.PickItUp.CanPickUpForageItems or true
         local canPickNormal =  SandboxVars.PickItUp.CanPickUpWorldInventoryItems or true
-        if canPickNormal then
+        if canPickForage then
             PickItUp.spawnForageIcon(pl)
         end
         if canPickNormal then
