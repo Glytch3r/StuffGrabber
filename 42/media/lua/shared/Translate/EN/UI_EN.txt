@@ -1,0 +1,4 @@
+    UI_EN = {
+        UI_optionscreen_binding_PickItUp = "Pick It Up",
+        UI_optionscreen_binding_Pick It Up = "Pick It Up"
+    }
